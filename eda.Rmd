@@ -1,0 +1,20 @@
+---
+title: "eda"
+author: "Albert Sun"
+date: "11/30/2020"
+output: pdf_document
+---
+```{r}
+library(tidyverse)
+library(skimr)
+```
+
+```{r}
+nc <- read_csv("data/data.csv")
+```
+
+```{r}
+skim(nc)
+```
+
+
