@@ -7,14 +7,81 @@ output: pdf_document
 ```{r}
 library(tidyverse)
 library(skimr)
+library(here)
 ```
 
 ```{r}
-nc <- read_csv("data/data.csv")
+durham <- read_csv(here("../data.csv")) %>% 
+  filter(COUNTY == 630)
 ```
 
 ```{r}
-skim(nc)
+durham <- durham %>% 
+  select(sort(current_vars())) 
 ```
 
 
+```{r}
+skim(durham)
+```
+
+```{r}
+ggplot(data = durham, aes(x = forcats::fct_infreq(race))) + 
+  geom_bar(fill = "#23356D") + 
+  labs(x = "Race",
+       y = "Count",
+       title = "Misdemeanor Convictions in Durham County by Race from 1994 to 2019",
+       caption = "Dates: 1994-11-01 to 2019-02-04") + 
+  scale_x_discrete(labels = c('Black','White','Hispanic','Other','American Indian','Unknown','Asian')) + 
+  theme_minimal() 
+```
+
+# Misdemeanor Convictions by Gender
+
+```{r}
+ggplot(data = durham, aes(x = forcats::fct_infreq(gender))) + 
+  geom_bar(fill = "#23356D") + 
+  labs(x = "Gender",
+       y = "Count",
+       title = "Misdemeanor Convictions in Durham County by Gender from 1994 to 2019",
+       caption = "Dates: 1994-11-01 to 2019-02-04") + 
+  scale_x_discrete(labels = c('Male','Female')) + 
+  theme_minimal()
+```
+
+# Misdemeanor Convictions by Types of Plea
+
+```{r}
+ggplot(data = durham, aes(x = forcats::fct_infreq(PLEA))) + 
+  geom_bar(fill = "#23356D") + 
+  labs(x = "Plea Type",
+       y = "Count",
+       title = "Types of Pleas in Durham County from 1994 to 2019",
+       caption = "Dates: 1994-11-01 to 2019-02-04") + 
+  scale_x_discrete(labels = c('Guilty','Guilty to lesser','Guilty Alford','No Contest','Not Guilty')) + 
+  theme_minimal()
+```
+
+
+# Convictions by type of offense (Person, Property, Drug, Public Order)
+
+
+# Interaction between race and actual sentence
+
+
+
+```{r}
+ggplot(durham, aes(x = race, y = ACTUAL)) + 
+  geom_boxplot()
+```
+
+
+# Top 5 misemeanor convictions by offense
+
+```{r}
+durham %>%
+  count(convtype)
+```
+
+
+# Misdemeanor convictions by type over time
