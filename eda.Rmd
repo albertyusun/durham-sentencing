@@ -68,20 +68,53 @@ ggplot(data = durham, aes(x = forcats::fct_infreq(PLEA))) +
 
 # Interaction between race and actual sentence
 
-
-
 ```{r}
-ggplot(durham, aes(x = race, y = ACTUAL)) + 
-  geom_boxplot()
+#ggplot(durham, aes(x = race, y = ACTUAL)) + 
+#  geom_boxplot()
 ```
 
 
 # Top 5 misemeanor convictions by offense
 
+# Age
+
 ```{r}
 durham %>%
-  count(convtype)
+  ggplot(aes(x = age)) + 
+  geom_histogram(bins = 10, fill = "#23356D") +
+  labs(title = "Distribution of age for Misdemeanor Convictions in Durham County from 1994 to 2019",
+       caption = "Dates: 1994-11-01 to 2019-02-04") + 
+  theme_minimal()
+```
+```{r}
+summarise(durham, mean_age = mean(age, na.rm = TRUE))
+```
+
+# Misdemeanor convictions over time (2018 - end)
+
+```{r}
+library(zoo)
 ```
 
 
-# Misdemeanor convictions by type over time
+```{r}
+since2018 <- durham %>%
+  filter(sentsas > "2018-06-01") %>%
+  mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
+  group_by(yrmn) %>%
+  summarise(cnt = n()) %>%
+  ggplot(aes(x = yrmn, y = cnt, group = 1)) +
+  geom_line(stat = "identity", size = 1.5, color = "#23356D") +
+  labs(x = "Month",
+       y = "# Misdemeanor Convictions",
+       title = "Number of Misdemeanor Convictions per month") + 
+  theme_minimal() + 
+  theme(axis.text.x=element_text(angle = -90, hjust = 0)) 
+
+since2018
+```
+
+Add place showing where santana deberry is elected
+
+
+# Misdemeanor convictions over time
