@@ -62,6 +62,19 @@ ggplot(data = durham, aes(x = forcats::fct_infreq(PLEA))) +
   theme_minimal()
 ```
 
+```{r}
+durham %>%
+  filter(sentsas > "2019-01-01") %>%
+  ggplot(aes(x = forcats::fct_infreq(PLEA))) + 
+  geom_bar(fill = "#23356D") + 
+  labs(x = "Plea Type",
+       y = "Count",
+       title = "Types of Pleas in Durham County in 2019",
+       caption = "Dates: 2019-01-01 to 2019-02-04") + 
+  scale_x_discrete(labels = c('Guilty','Guilty to lesser','Guilty Alford','No Contest','Not Guilty')) + 
+  theme_minimal()
+```
+
 
 # Convictions by type of offense (Person, Property, Drug, Public Order)
 
@@ -81,9 +94,11 @@ ggplot(data = durham, aes(x = forcats::fct_infreq(PLEA))) +
 ```{r}
 durham %>%
   ggplot(aes(x = age)) + 
-  geom_histogram(bins = 10, fill = "#23356D") +
-  labs(title = "Distribution of age for Misdemeanor Convictions in Durham County from 1994 to 2019",
+  geom_histogram(binwidth = 1, fill = "#23356D") +
+  labs(title = "Age of Individuals Convicted of Misdemeanors in Durham County",
        caption = "Dates: 1994-11-01 to 2019-02-04") + 
+  labs(x = "Age",
+       y = "Count") +
   theme_minimal()
 ```
 ```{r}
@@ -107,14 +122,43 @@ since2018 <- durham %>%
   geom_line(stat = "identity", size = 1.5, color = "#23356D") +
   labs(x = "Month",
        y = "# Misdemeanor Convictions",
-       title = "Number of Misdemeanor Convictions per month") + 
+       title = "Total Monthly Misdemeanor Convictions") + 
   theme_minimal() + 
-  theme(axis.text.x=element_text(angle = -90, hjust = 0)) 
+  theme(axis.text.x=element_text(angle = -90, hjust = 0), 
+        axis.title.x=element_blank())
 
 since2018
 ```
 
 Add place showing where santana deberry is elected
 
+Add images: https://stackoverflow.com/questions/9917049/inserting-an-image-to-ggplot2
 
-# Misdemeanor convictions over time
+# Misdemeanor convictions over time by type
+
+```{r}
+durham <- durham %>% 
+  mutate(crimetype = as.factor(crimetype)) 
+
+durham$crimetype <- factor(durham$crimetype, levels=c("1", "2", "3", "4"), labels=c("Person", "Property", "Drug (Non Trafficking)", "Other"))
+
+durham %>%
+  filter(sentsas > "2010-06-01") %>%
+  mutate(yrmn = as.yearmon(sentsas)) %>%
+  group_by(FY) %>%
+  count(crimetype) %>%
+  ungroup %>%
+  mutate(crimetype = as.factor(crimetype)) %>%
+  ggplot(aes(x = FY, y = n, group = crimetype)) + 
+  geom_line() +
+  geom_point(aes(shape = crimetype)) + 
+  scale_color_manual(values = c("#23356D", "red", "green", "black")) +
+  theme_minimal() + 
+  theme(axis.text.x=element_text(angle = -90, hjust = 0))  +
+  labs(shape='Crime Type',
+       title = "Misdemeanor Convictions by Type of Offense") +
+  theme(axis.title.x=element_blank(),
+        axis.title.y=element_blank())
+```
+
+# fine imposed
