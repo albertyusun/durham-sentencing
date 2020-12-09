@@ -1,2 +1,2 @@
 # durham-sentencing
- CJS
+Wilson Center for Science and Justice
