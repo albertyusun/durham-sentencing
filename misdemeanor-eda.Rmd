@@ -1,5 +1,5 @@
 ---
-title: "Exploratory Data Analysis"
+title: "Durham Misdemeanor: EDA"
 author: "Albert Sun"
 date: "11/30/2020"
 output: 
@@ -18,92 +18,114 @@ library(zoo)
 ```
 
 ```{r}
-durham <- read_csv(here("../misdemeanor_data.csv")) %>% 
-  filter(COUNTY == 630)
+misdemeanor <- read_csv(here("../misdemeanor_data.csv")) %>% 
+  filter(COUNTY == 310)
 ```
 
-```{r}
-durham <- durham %>% 
+```{r sort columns alpha}
+misdemeanor <- misdemeanor %>% 
   select(sort(current_vars())) 
 ```
 
 ```{r}
-# skim(durham)
+skim(misdemeanor)
 ```
  
 # Demographics
 
 Here are three graphs showing race, gender, and age for Misdemeanor Convictions in 2019. The NC Setencing Commissions' dataset is limited up until 2019-06-11, so these graphs only contain data for the first half of 2019. The dates refer to the sentence date of the most serious offense, not necessarily when the offense occurred. As such, these visualizations are meant to focus on the effects of how the Durham legal system has adjudicated these crimes. 
 
+COMPARE THESE JAIL DEMOGRAPHIC NUMBERS TO POPULATION DEMOGRAPHIC NUMBERS
+
 ```{r race}
-durham %>%
+misdemeanor %>%
   filter(sentsas > "2019-01-01") %>%
   ggplot(aes(x = forcats::fct_infreq(race))) + 
   geom_bar(fill = "#23356D") + 
   labs(x = "Race",
        y = "Count",
        title = "Race for Durham County Misdemeanor Convictions, 2019",
-       caption = "2019-01-01 to 2019-06-11") + 
+       caption = "2019-01-01 to 2019-06-28") + 
   scale_x_discrete(labels = c('Black','White','Hispanic','Other','American Indian','Unknown','Asian')) + 
   theme_minimal() +
   theme(axis.title.x=element_blank())
 ```
 
 ```{r gender}
-durham %>%
+misdemeanor %>%
   filter(sentsas > "2019-01-01") %>%
   ggplot(aes(x = forcats::fct_infreq(gender))) + 
   geom_bar(fill = "#23356D") + 
   labs(x = "Gender",
        y = "Count",
        title = "Gender for Durham County Misdemeanor Convictions, 2019",
-       caption = "2019-01-01 to 2019-06-11") + 
+       caption = "2019-01-01 to 2019-06-28") + 
   scale_x_discrete(labels = c('Male','Female')) + 
   theme_minimal() +
   theme(axis.title.x=element_blank())
 ```
 
 ```{r age}
-durham %>%
+misdemeanor %>%
   filter(sentsas > "2019-01-01") %>%
   ggplot(aes(x = age)) + 
   geom_density(binwidth = 1, fill = "#23356D") +
   labs(title = "Age for Durham County Misdemeanor Convictions, 2019",
-       caption = "2019-01-01 to 2019-06-11") + 
+       caption = "2019-01-01 to 2019-06-28") + 
   labs(x = "Age") +
   theme_minimal()
 ```
 
 ```{r}
-durham %>%
+misdemeanor %>%
   filter(sentsas > "2019-01-01") %>%
   summarise(mean_age = mean(age, na.rm = TRUE),
             median_age = median(age, na.rm = TRUE))
 ```
 
-The average age for Misdemeanor Convictions for Durham County in the first half of 2019 is 34 years.
+The median age of receiving a misdemeanor conviction in the first half of 2019 is 32 years.
 
 # Pleas
 
 ```{r types of plea}
-durham %>%
+misdemeanor %>%
   filter(sentsas > "2019-01-01") %>%
   ggplot(aes(x = forcats::fct_infreq(PLEA))) + 
   geom_bar(fill = "#23356D") + 
   labs(x = "Plea Type",
        y = "Count",
        title = "Plea Types for Durham County Misdemeanor Convictions, 2019",
-       caption = "2019-01-01 to 2019-06-11") + 
+       caption = "2019-01-01 to 2019-06-28") + 
   scale_x_discrete(labels = c('Guilty','Guilty to lesser','Guilty Alford','No Contest','Not Guilty')) + 
   theme_minimal()
 ```
 
 # Time-series Graphs
 
-Given the small sample size of Misdemeanor Convictions in a monthly span, the following graph will fluctuate.
+In the first 6 months of Satana Deberry's term as Durham County District Attorney, 
+
+```{r mean_last_6_echols}
+misdemeanor %>%
+  filter(sentsas > "2018-01-01" & sentsas < "2019-01-01") %>%
+  mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
+  group_by(yrmn) %>%
+  summarise(cnt = n()) %>%
+  summarise(mean_last_6_echols = mean(cnt))
+```
+
+```{r mean_first 6 satana}
+misdemeanor %>%
+  filter(sentsas > "2018-06-01") %>%
+  mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
+  group_by(yrmn) %>%
+  summarise(cnt = n()) %>%
+  summarise(mean_first_6_satana = mean(cnt))
+```
+
+
 
 ```{r}
-since2018 <- durham %>%
+misdemeanor %>%
   filter(sentsas > "2018-01-01") %>%
   mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
   group_by(yrmn) %>%
@@ -111,25 +133,42 @@ since2018 <- durham %>%
   ggplot(aes(x = yrmn, y = cnt, group = 1)) +
   geom_line(stat = "identity", size = 1.5, color = "#23356D") +
   labs(x = "Month",
-       y = "# Misdemeanor Convictions",
-       title = "Total Misdemeanor Convictions") + 
+       y = "Total Misdemeanor Convictions",
+       title = "Total Misdemeanor Convictions per Month in Durham County",
+       subtitle = "Satana Deberry (D) replaces incumbent Roger Echols (D) as Durham County District 
+Attorney in Jan 2019") + 
   theme_minimal() + 
+  geom_vline(aes(xintercept = which(levels(yrmn) %in% 'Jan 2019')),
+             color = "blue", size=1.5) + 
+  annotate("label", x = 5, y = 70,
+           label = "Echols", 
+           size = 8, 
+           color = "blue", 
+           fontface = 2) +
+  annotate("label", x = 15.5, y = 70, 
+           label = "Deberry", 
+           size = 8, 
+           color = "blue", 
+           fontface = 2) +
+  ylim(0, 140) +
   theme(axis.text.x=element_text(angle = -90, hjust = 0), 
         axis.title.x=element_blank())
-
-since2018
 ```
 
 NOTE: For the following graph, the count for 2019 only includes the first half of 2019, because the dataset ends at 2019-06-11.
 
+Misdemeanor convictions have been decreasing yearly in Durham County; they are 
+projected to continue decreasing going into 2019 based on this data. Note: the total misdemeanor counts for FY 2019 as shown on the graph isn't fully representative of the *entire* FY 2019, but rather only convictions sentenced up until 2019-06-28, due to the limitations of the existing dataset.
+
 ```{r}
-durham <- durham %>% 
+misdemeanor <- misdemeanor %>% 
   mutate(crimetype = as.factor(crimetype)) 
 
-durham$crimetype <- factor(durham$crimetype, levels=c("1", "2", "3", "4"), labels=c("Person", "Property", "Drug (Non Trafficking)", "Other"))
+misdemeanor$crimetype <- factor(misdemeanor$crimetype, levels=c("1", "2", "3", "4"), 
+                                labels=c("Person", "Property", "Drug (Non Trafficking)", "Other"))
 
-durham %>%
-  filter(sentsas > "2010-06-01") %>%
+misdemeanor %>%
+  filter(sentsas > "2009-06-30") %>%
   mutate(yrmn = as.yearmon(sentsas)) %>%
   group_by(FY) %>%
   count(crimetype) %>%
@@ -145,7 +184,8 @@ durham %>%
         axis.title.y=element_blank(),
         legend.position="bottom",
         legend.title=element_blank())  +
-  labs(title = "Misdemeanor Convictions by Type of Offense") 
+  labs(title = "Misdemeanor Convictions by Type of Offense",
+       caption = "Note: FY 2019 only runs through cases sentenced before 2019-06-28") 
 ```
 
 # Fines
@@ -153,7 +193,7 @@ durham %>%
 The proportion about people fined are about the same across time.
 
 ```{r}
-durham_1819 <- durham %>%
+durham_1819 <- misdemeanor %>%
   filter(sentsas > "2018-01-01")
 
 durham_1819 %>%

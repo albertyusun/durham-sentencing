@@ -1,0 +1,377 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Durham Misdemeanor: EDA},
+  pdfauthor={Albert Sun},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\title{Durham Misdemeanor: EDA}
+\author{Albert Sun}
+\date{11/30/2020}
+
+\begin{document}
+\maketitle
+
+\begin{verbatim}
+## Warning: package 'skimr' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'here' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'zoo' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: `current_vars()` is deprecated as of dplyr 0.8.4.
+## Please use `tidyselect::peek_vars()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_warnings()` to see where this warning was generated.
+\end{verbatim}
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Data summary}\tabularnewline
+\toprule
+\endhead
+Name & misdemeanor\tabularnewline
+Number of rows & 74843\tabularnewline
+Number of columns & 66\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Column type frequency: &\tabularnewline
+character & 14\tabularnewline
+Date & 4\tabularnewline
+numeric & 48\tabularnewline
+\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ &\tabularnewline
+Group variables & None\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: character}
+
+\begin{longtable}[]{@{}lrrrrrrr@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & min & max & empty &
+n\_unique & whitespace\tabularnewline
+\midrule
+\endhead
+atty & 32 & 1.00 & 1 & 1 & 0 & 4 & 0\tabularnewline
+CHRG\_GS & 0 & 1.00 & 4 & 15 & 0 & 552 & 0\tabularnewline
+CHRGTEXT & 0 & 1.00 & 9 & 50 & 0 & 1003 & 0\tabularnewline
+CONV\_GS & 0 & 1.00 & 4 & 15 & 0 & 500 & 0\tabularnewline
+CONVTEXT & 0 & 1.00 & 4 & 50 & 0 & 1331 & 0\tabularnewline
+CONVTEXT2 & 0 & 1.00 & 9 & 39 & 0 & 341 & 0\tabularnewline
+COUNTY & 0 & 1.00 & 3 & 3 & 0 & 1 & 0\tabularnewline
+DOB & 991 & 0.99 & 8 & 8 & 0 & 15262 & 0\tabularnewline
+FY & 0 & 1.00 & 7 & 7 & 0 & 20 & 0\tabularnewline
+gender & 0 & 1.00 & 1 & 1 & 0 & 3 & 0\tabularnewline
+MODISP & 0 & 1.00 & 2 & 2 & 0 & 2 & 0\tabularnewline
+PLEA & 0 & 1.00 & 2 & 2 & 0 & 5 & 0\tabularnewline
+race & 0 & 1.00 & 1 & 1 & 0 & 7 & 0\tabularnewline
+VERDICT & 0 & 1.00 & 2 & 2 & 0 & 2 & 0\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: Date}
+
+\begin{longtable}[]{@{}lrrlllr@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & min & max & median &
+n\_unique\tabularnewline
+\midrule
+\endhead
+dobsas & 1508 & 0.98 & 1858-05-09 & 2002-04-04 & 1975-08-27 &
+15215\tabularnewline
+offsas & 0 & 1.00 & 1994-10-01 & 2019-05-31 & 2006-09-25 &
+8009\tabularnewline
+sentsas & 0 & 1.00 & 1999-07-01 & 2019-06-28 & 2007-04-30 &
+4834\tabularnewline
+servsas & 70317 & 0.06 & 2003-08-05 & 2019-06-05 & 2017-05-27 &
+1260\tabularnewline
+\bottomrule
+\end{longtable}
+
+\textbf{Variable type: numeric}
+
+\begin{longtable}[]{@{}lrrrrrrrrrl@{}}
+\toprule
+skim\_variable & n\_missing & complete\_rate & mean & sd & p0 & p25 &
+p50 & p75 & p100 & hist\tabularnewline
+\midrule
+\endhead
+\_cmsvcflag & 0 & 1.00 & 0.01 & 0.08 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_ctcostflag & 0 & 1.00 & 0.64 & 0.48 & 0.00 & 0 & 1 & 1 & 1 &
+▅▁▁▁▇\tabularnewline
+\_ctmsrvd & 0 & 1.00 & 1.39 & 8.32 & 0.00 & 0 & 0 & 0 & 258 &
+▇▁▁▁▁\tabularnewline
+\_ctsflag & 0 & 1.00 & 0.06 & 0.23 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_dtcflag & 23361 & 0.69 & 0.00 & 0.05 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_ehaflag & 0 & 1.00 & 0.00 & 0.03 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_fineflag & 0 & 1.00 & 0.44 & 0.50 & 0.00 & 0 & 0 & 1 & 1 &
+▇▁▁▁▆\tabularnewline
+\_jurytrial & 68322 & 0.09 & 0.00 & 0.05 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_probtime & 31672 & 0.58 & 12.82 & 5.29 & 0.03 & 12 & 12 & 12 & 69 &
+▇▂▁▁▁\tabularnewline
+\_restflag & 0 & 1.00 & 0.12 & 0.32 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_sexoffcond & 23361 & 0.69 & 0.00 & 0.02 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_smcpflag & 60219 & 0.20 & 0.09 & 0.29 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_spfacil & 73775 & 0.01 & 1.00 & 0.06 & 1.00 & 1 & 1 & 1 & 2 &
+▇▁▁▁▁\tabularnewline
+\_spflag & 0 & 1.00 & 0.01 & 0.12 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+\_supvprob & 31672 & 0.58 & 0.63 & 0.48 & 0.00 & 0 & 1 & 1 & 1 &
+▅▁▁▁▇\tabularnewline
+actual & 55581 & 0.26 & 31.63 & 38.57 & 0.00 & 2 & 20 & 45 & 1350 &
+▇▁▁▁▁\tabularnewline
+age & 1008 & 0.99 & 32.80 & 11.01 & 16.00 & 24 & 31 & 40 & 92 &
+▇▆▂▁▁\tabularnewline
+age\_offense & 1405 & 0.98 & 32.22 & 11.01 & 1.00 & 23 & 30 & 40 & 92 &
+▂▇▃▁▁\tabularnewline
+aic & 0 & 1.00 & 2.46 & 0.87 & 1.00 & 1 & 3 & 3 & 3 &
+▃▁▁▁▇\tabularnewline
+aicpj & 11458 & 0.85 & 3.48 & 0.91 & 1.00 & 3 & 4 & 4 & 4 &
+▁▂▁▁▇\tabularnewline
+aoc\_chrg & 0 & 1.00 & 131.54 & 135.20 & 21.00 & 100 & 110 & 120 & 888 &
+▇▁▁▁▁\tabularnewline
+aoc\_conv & 0 & 1.00 & 113.51 & 21.62 & 100.00 & 110 & 110 & 120 & 666 &
+▇▁▁▁▁\tabularnewline
+casemos & 70318 & 0.06 & 4.92 & 6.17 & 0.00 & 2 & 4 & 6 & 157 &
+▇▁▁▁▁\tabularnewline
+CHRG99 & 0 & 1.00 & 34.66 & 28.99 & 0.00 & 16 & 22 & 50 & 99 &
+▇▃▃▁▃\tabularnewline
+CHRGCODE & 0 & 1.00 & 3707.18 & 1629.44 & 922.00 & 2334 & 3516 & 5418 &
+9999 & ▇▆▇▁▁\tabularnewline
+chrgtype & 0 & 1.00 & 2.03 & 0.62 & 1.00 & 2 & 2 & 2 & 4 &
+▂▇▁▃▁\tabularnewline
+CONV99 & 0 & 1.00 & 35.62 & 31.42 & 0.00 & 13 & 22 & 53 & 99 &
+▇▃▂▁▃\tabularnewline
+convclass & 0 & 1.00 & 112.64 & 8.31 & 100.00 & 110 & 110 & 110 & 130 &
+▂▇▁▂▂\tabularnewline
+CONVCODE & 0 & 1.00 & 3714.87 & 1682.01 & 1040.00 & 2322 & 3401 & 5418 &
+9999 & ▇▆▇▁▁\tabularnewline
+convtype & 0 & 1.00 & 2.21 & 0.41 & 2.00 & 2 & 2 & 2 & 3 &
+▇▁▁▁▂\tabularnewline
+court & 0 & 1.00 & 1.98 & 0.13 & 1.00 & 2 & 2 & 2 & 2 &
+▁▁▁▁▇\tabularnewline
+crimetype & 0 & 1.00 & 2.87 & 1.07 & 1.00 & 2 & 3 & 4 & 4 &
+▂▆▁▅▇\tabularnewline
+ctsgemin & 66132 & 0.12 & 0.17 & 0.38 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▂\tabularnewline
+district & 0 & 1.00 & 14.00 & 0.00 & 14.00 & 14 & 14 & 14 & 14 &
+▁▁▇▁▁\tabularnewline
+district\_orig & 0 & 1.00 & 14.00 & 0.00 & 14.00 & 14 & 14 & 14 & 14 &
+▁▁▇▁▁\tabularnewline
+good & 0 & 1.00 & 0.94 & 0.24 & 0.00 & 1 & 1 & 1 & 1 &
+▁▁▁▁▇\tabularnewline
+jra & 60219 & 0.20 & 0.97 & 0.17 & 0.00 & 1 & 1 & 1 & 1 &
+▁▁▁▁▇\tabularnewline
+minday & 11974 & 0.84 & 49.50 & 52.01 & 1.00 & 20 & 45 & 60 & 4560 &
+▇▁▁▁▁\tabularnewline
+newdisp & 0 & 1.00 & 1.05 & 0.21 & 1.00 & 1 & 1 & 1 & 3 &
+▇▁▁▁▁\tabularnewline
+OFFDATE & 0 & 1.00 & 20066687.47 & 51880.67 & 19941001.00 & 20020925 &
+20060925 & 20101113 & 20190531 & ▁▇▇▆▂\tabularnewline
+pcl & 0 & 1.00 & 1.67 & 0.73 & 1.00 & 1 & 2 & 2 & 3 &
+▇▁▆▁▂\tabularnewline
+priorrec & 0 & 1.00 & 1.42 & 2.02 & 0.00 & 0 & 1 & 2 & 58 &
+▇▁▁▁▁\tabularnewline
+prison & 11458 & 0.85 & 0.12 & 0.32 & 0.00 & 0 & 0 & 0 & 1 &
+▇▁▁▁▁\tabularnewline
+senmonth & 0 & 1.00 & 6.43 & 3.41 & 1.00 & 3 & 7 & 9 & 12 &
+▇▅▅▆▇\tabularnewline
+SENTDATE & 0 & 1.00 & 20072797.48 & 51126.66 & 19990701.00 & 20030522 &
+20070430 & 20110531 & 20190628 & ▇▇▇▅▃\tabularnewline
+SERVDATE & 70317 & 0.06 & 20169877.05 & 9922.79 & 20030805.00 & 20160916
+& 20170527 & 20180217 & 20190605 & ▁▁▁▁▇\tabularnewline
+ssa & 0 & 1.00 & 1.00 & 0.00 & 1.00 & 1 & 1 & 1 & 1 &
+▁▁▇▁▁\tabularnewline
+type & 0 & 1.00 & 2.47 & 1.28 & 1.00 & 2 & 2 & 2 & 7 &
+▇▁▁▁▁\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{demographics}{%
+\section{Demographics}\label{demographics}}
+
+Here are three graphs showing race, gender, and age for Misdemeanor
+Convictions in 2019. The NC Setencing Commissions' dataset is limited up
+until 2019-06-11, so these graphs only contain data for the first half
+of 2019. The dates refer to the sentence date of the most serious
+offense, not necessarily when the offense occurred. As such, these
+visualizations are meant to focus on the effects of how the Durham legal
+system has adjudicated these crimes.
+
+COMPARE THESE JAIL DEMOGRAPHIC NUMBERS TO POPULATION DEMOGRAPHIC NUMBERS
+
+\includegraphics{misdemeanor-eda_files/figure-latex/race-1.pdf}
+
+\includegraphics{misdemeanor-eda_files/figure-latex/gender-1.pdf}
+
+\begin{verbatim}
+## Warning: Ignoring unknown parameters: binwidth
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 1 rows containing non-finite values (stat_density).
+\end{verbatim}
+
+\includegraphics{misdemeanor-eda_files/figure-latex/age-1.pdf}
+
+\begin{verbatim}
+## # A tibble: 1 x 2
+##   mean_age median_age
+##      <dbl>      <dbl>
+## 1     35.5         32
+\end{verbatim}
+
+The median age of receiving a misdemeanor conviction in the first half
+of 2019 is 32 years.
+
+\hypertarget{pleas}{%
+\section{Pleas}\label{pleas}}
+
+\includegraphics{misdemeanor-eda_files/figure-latex/types of plea-1.pdf}
+
+\hypertarget{time-series-graphs}{%
+\section{Time-series Graphs}\label{time-series-graphs}}
+
+In the first 6 months of Satana Deberry's term as Durham County District
+Attorney,
+
+\begin{verbatim}
+## # A tibble: 1 x 1
+##   mean_last_6_echols
+##                <dbl>
+## 1               122.
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 1 x 1
+##   mean_first_6_satana
+##                 <dbl>
+## 1                93.4
+\end{verbatim}
+
+\includegraphics{misdemeanor-eda_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+NOTE: For the following graph, the count for 2019 only includes the
+first half of 2019, because the dataset ends at 2019-06-11.
+
+Misdemeanor convictions have been decreasing yearly in Durham County;
+they are projected to continue decreasing going into 2019 based on this
+data. Note: the total misdemeanor counts for FY 2019 as shown on the
+graph isn't fully representative of the \emph{entire} FY 2019, but
+rather only convictions sentenced up until 2019-06-28, due to the
+limitations of the existing dataset.
+
+\includegraphics{misdemeanor-eda_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\hypertarget{fines}{%
+\section{Fines}\label{fines}}
+
+The proportion about people fined are about the same across time.
+
+\includegraphics{misdemeanor-eda_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+include other years
+
+Look at fines using race and gender
+
+\hypertarget{look-at-next}{%
+\section{Look at next:}\label{look-at-next}}
+
+\begin{itemize}
+\item
+  Fine imposed
+\item
+  Add place showing where santana deberry is elected
+\item
+  Add images:
+  \url{https://stackoverflow.com/questions/9917049/inserting-an-image-to-ggplot2}
+\end{itemize}
+
+Plots to add:
+
+\begin{itemize}
+\item
+  Top 5 misemeanor convictions by offense
+\item
+  Convictions by type of offense (Person, Property, Drug, Public Order)
+\item
+  Interaction between race and actual sentence
+\end{itemize}
+
+\end{document}
