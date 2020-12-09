@@ -1,0 +1,42 @@
+---
+title: "to-do"
+author: "Team 19"
+date: "12/9/2020"
+output: html_document
+---
+# Fines
+
+The proportion about people fined are about the same across time.
+
+```{r}
+durham_1819 <- misdemeanor %>%
+  filter(sentsas > "2018-01-01")
+
+durham_1819 %>%
+  mutate(year = factor(if_else(sentsas > "2019-01-01", 2019, 2018))) %>%
+  mutate(fineflag = factor(durham_1819$"_fineflag")) %>%
+  group_by(year) %>%
+  count(fineflag) %>%
+  ggplot(aes(x = year, y = n, fill = fineflag)) + 
+  geom_bar(position="fill", stat="identity") 
+```
+
+include other years
+
+Look at fines using race and gender
+
+# Look at next:
+
++ Fine imposed
+
++ Add place showing where santana deberry is elected
+
++ Add images: https://stackoverflow.com/questions/9917049/inserting-an-image-to-ggplot2
+
+Plots to add: 
+
++ Top 5 misemeanor convictions by offense
+
++ Convictions by type of offense (Person, Property, Drug, Public Order)
+
++ Interaction between race and actual sentence

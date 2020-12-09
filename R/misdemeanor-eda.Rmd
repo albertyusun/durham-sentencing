@@ -1,0 +1,222 @@
+---
+title: "Durham Misdemeanor Convictions Report"
+author: "Wilson Center for Science and Justice, Albert Sun"
+date: "12/9/2020"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+---
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo=FALSE, 
+                      message=FALSE, 
+                      warning=FALSE,
+                      fig.width = 6, 
+                      fig.height = 4)
+library(tidyverse)
+library(skimr)
+library(here)
+library(zoo)
+library(kableExtra)
+```
+
+```{r}
+misdemeanor <- read_csv(here("../misdemeanor_data.csv")) %>% 
+  filter(COUNTY == 310)
+```
+
+```{r sort columns alpha}
+misdemeanor <- misdemeanor %>% 
+  select(sort(current_vars())) 
+```
+
+```{r}
+#skim(misdemeanor)
+```
+
+## Data description
+
+The North Carolina Sentencing and Policy Advisory Commission's historical misdemeanor dataset was used to create the following visualizations and insights. This dataset was requested by the Wilson Center for Science and Justice, and the datafile was last updated in July 2020.
+
+There are 74,843 total observations for misdemeanor convictions in Durham County recorded in the dataset, recording convictions for offenses that occurred in the following time-span: 1994-10-01 to 2019-05-31. 
+
+Note: Although the datafile was last updated in July 2020, it takes about a year for the Sentencing Commission to clean and update the datafile with the most recent convictions. Thus, this version of dataset, and as a result the insights in this report, ends mid-2019. Henceforth, when the report mentions 2019, it refers to convictions in the first half of 2019.
+
+## Misdemeanors Over Time
+
+```{r mean_last_6_echols, include=FALSE}
+misdemeanor %>%
+  filter(sentsas > "2018-06-01" & sentsas < "2019-01-01") %>%
+  mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
+  group_by(yrmn) %>%
+  summarise(cnt = n()) %>%
+  summarise(mean_last_6_echols = mean(cnt)) %>%
+  kable
+```
+
+```{r mean_first 6 satana, include=FALSE}
+misdemeanor %>%
+  filter(sentsas > "2018-06-01") %>%
+  mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
+  group_by(yrmn) %>%
+  summarise(cnt = n()) %>%
+  summarise(mean_first_6_satana = mean(cnt)) %>%
+  kable
+```
+
+```{r}
+misdemeanor %>%
+  filter(sentsas > "2016-01-01") %>%
+  mutate(yrmn = as.factor(as.yearmon(sentsas))) %>%
+  group_by(yrmn) %>%
+  summarise(cnt = n()) %>%
+  ggplot(aes(x = yrmn, y = cnt, group = 1)) +
+  geom_line(stat = "identity", size = 1.5, color = "#23356D") +
+  labs(x = "Month",
+       y = "Total Misdemeanor Convictions",
+       title = "Total Misdemeanor Convictions per Month in Durham County",
+       subtitle = "Satana Deberry (D) replaces incumbent Roger Echols (D) as Durham County 
+District Attorney in Jan 2019") + 
+  theme_minimal() + 
+  geom_vline(aes(xintercept = which(levels(yrmn) %in% 'Jan 2019')),
+             color = "#23356D", size=1.5) + 
+  annotate("label", x = 15, y = 180,
+           label = "Echols", 
+           size = 3, 
+           fontface = 2) +
+  annotate("label", x = 39.5, y = 180, 
+           label = "Deberry", 
+           size = 3, 
+           fontface = 2) +
+  ylim(0, 200) +
+  theme(axis.text.x=element_text(angle = -90, hjust = 0), 
+        axis.title.x=element_blank()) 
+```
+
+DA Satana Deberry has convicted less people in Durham county per month than DA Roger Echols:
+
++ Under **Roger Echols'** term as Durham County District Attorney (Jan 2014 to Jan 2019), there were approximately **160 misdemeanor convictions per month**, on average. 
+
++ In the first 6 months of **Satana Deberry's** term as Durham County District Attorney (Jan 2019 to Jun 2019), there were **93 misdemeanor convictions per month**, on average.
+
+```{r}
+misdemeanor2 <- misdemeanor %>% 
+  mutate(crimetype = as.factor(crimetype)) 
+
+misdemeanor2$crimetype <- factor(misdemeanor2$crimetype, levels=c("1", "2", "3", "4"), 
+                                labels=c("Person", "Property", "Drug (Non Trafficking)", "Other"))
+
+misdemeanor2 %>%
+  filter(sentsas > "2009-06-30") %>%
+  mutate(yrmn = as.yearmon(sentsas)) %>%
+  group_by(FY) %>%
+  count(crimetype) %>%
+  ungroup %>%
+  mutate(crimetype = as.factor(crimetype)) %>%
+  ggplot(aes(x = FY, y = n, group = crimetype)) + 
+  geom_line() +
+  geom_point(aes(shape = crimetype)) + 
+  scale_color_manual(values = c("#23356D", "red", "green", "black")) +
+  theme_minimal() + 
+  theme(axis.text.x=element_text(angle = -90, hjust = 0),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="bottom",
+        legend.title=element_blank())  +
+  labs(title = "Type of Offense",
+       subtitle = "Durham County Misdemeanor Convictions 2010-2019",
+       caption = "Note: FY 2019 only runs through cases sentenced before 2019-06-28") 
+```
+
+Misdemeanor convictions have been decreasing yearly in Durham County; based on existing trends, they are 
+projected to continue decreasing in 2019 and beyond.
+
+Note: the total misdemeanor counts for FY 2019 as shown on the graph isn't fully representative of the *entire* FY 2019, but rather only convictions sentenced up until 2019-06-28, due to the fact that the dataset ends mid-FY 2019.
+
+## Demographics/Types of Pleas
+
+Here are four graphs showing the composition (race, gender, age, plea types) for Misdemeanor Convictions in 2019. 
+
+Note: The NC Sentencing Commissions' dataset is limited up until 2019-06-11, so these graphs only contain data for the first half of 2019. The dates refer to the sentence date of the most serious offense, not necessarily when the offense occurred. 
+
+```{r race, fig.width = 4, fig.height = 3}
+misdemeanor %>%
+  filter(sentsas > "2019-01-01") %>%
+  count(race) %>%
+  mutate(perc = n/sum(n) * 100) -> misdemeanor_race
+
+ggplot(misdemeanor_race, aes(x = reorder(race, -perc), y = perc)) + 
+  geom_bar(stat = "identity", fill = "#23356D") + 
+  labs(y = "Percentage",
+       title = "Race",
+       subtitle = "Durham County Misdemeanor Convictions 2019",
+       caption = "2019-01-01 to 2019-06-28") + 
+  scale_x_discrete(labels = c('Black','White','Hispanic','Other','American Indian','Unknown','Asian')) + 
+  theme_minimal() +
+  theme(axis.title.x=element_blank())
+```
+
+In the first half of 2019, 
+
++ 69% of Misdemeanor Convictions were on Black individuals, compared to a 36.9% Black population in Durham County writ-large according to the July 1, 2019 US Census.
+
++ 25% of Misdemeanor Convictions were on white individuals, compared to a 54% white population in Durham County writ-large according to the July 1, 2019 US Census.
+
+
+```{r gender, fig.width = 4, fig.height = 3}
+misdemeanor %>%
+  filter(sentsas > "2019-01-01") %>%
+  count(gender) %>%
+  mutate(perc = n/sum(n) * 100) -> misdemeanor_gender
+
+ggplot(misdemeanor_gender, aes(x = reorder(gender, -perc), y = perc)) + 
+  geom_bar(stat = "identity", fill = "#23356D") + 
+  labs(y = "Percentage",
+       title = "Gender",
+       subtitle = "Durham County Misdemeanor Convictions 2019",
+       caption = "2019-01-01 to 2019-06-28") + 
+  scale_x_discrete(labels = c('Male','Female')) + 
+  theme_minimal() +
+  theme(axis.title.x=element_blank())
+```
+
+79% of misdemeanor convictions in Durham County were categorized as male in the first half of 2019.
+
+```{r age, fig.width = 4, fig.height = 3}
+misdemeanor %>%
+  filter(sentsas > "2019-01-01") %>%
+  ggplot(aes(x = age)) + 
+  geom_density(fill = "#23356D") +
+  labs(title = "Age",
+       subtitle = "Durham County Misdemeanor Convictions 2019") + 
+  labs(x = "Age") +
+  theme_minimal()
+```
+
+The median age of receiving a misdemeanor conviction in the first half of 2019 is 32 years.
+
+```{r include=FALSE}
+misdemeanor %>%
+  filter(sentsas > "2019-01-01") %>%
+  summarise(mean_age = mean(age, na.rm = TRUE),
+            median_age = median(age, na.rm = TRUE)) %>%
+  kable()
+```
+
+```{r types of plea, fig.width = 4, fig.height = 3}
+misdemeanor %>%
+  filter(sentsas > "2019-01-01") %>%
+  count(PLEA) %>%
+  mutate(perc = n/sum(n) * 100) -> misdemeanor_PLEA
+
+ggplot(misdemeanor_PLEA, aes(x = reorder(PLEA, -perc), y = perc)) + 
+  geom_bar(stat = "identity", fill = "#23356D") + 
+  labs(y = "Percentage",
+       title = "Plea Type",
+       subtitle = "Durham County Misdemeanor Convictions 2019",
+       caption = "2019-01-01 to 2019-06-28") + 
+  scale_x_discrete(labels = c('Guilty','Guilty to lesser','Guilty Alford','No Contest','Not Guilty')) + 
+  theme_minimal() +
+  theme(axis.title.x=element_blank())
+```
+
+78% of misdemeanor convictions were resolved by pleading guilty, 14% were resolved by pleading guilty to lesser, 6% were resolved by a guilty alford plea, and 0.6% were resolved by no contest.
